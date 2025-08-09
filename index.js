@@ -12,7 +12,9 @@ mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("Conectado a MongoDB"))
   .catch((error) => console.error("Error conectando a MongoDB:", error));
 
+// Rutas
 app.use("/api/estudiantes", require("./routes/estudiantes"));
+app.use("/api/auth", require("./routes/auth")); // 👈 Nueva ruta de login/registro
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {

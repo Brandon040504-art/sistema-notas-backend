@@ -48,4 +48,12 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
+import { verificarToken, soloAdmin, soloProfesor, soloAlumno } from "../middlewares/auth.js";
+
+// Ejemplo:
+router.post("/", verificarToken, soloProfesor, agregarEstudiante);
+router.delete("/:id", verificarToken, soloAdmin, eliminarEstudiante);
+router.get("/mis-materias", verificarToken, soloAlumno, obtenerMateriasAlumno);
+
+
 module.exports = router;
