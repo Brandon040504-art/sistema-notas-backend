@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const NotaSchema = new mongoose.Schema({
   materia: { type: String, required: true },
@@ -7,8 +7,8 @@ const NotaSchema = new mongoose.Schema({
 
 const EstudianteSchema = new mongoose.Schema({
   nombre: { type: String, required: true },
-  matricula: { type: String, required: true },
+  matricula: { type: String, required: true, unique: true },
   notas: [NotaSchema]
 });
 
-module.exports = mongoose.model('Estudiante', EstudianteSchema);
+module.exports = mongoose.model("Estudiante", EstudianteSchema);

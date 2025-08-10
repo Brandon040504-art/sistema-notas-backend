@@ -13,8 +13,8 @@ mongoose.connect(process.env.MONGO_URI)
   .catch((error) => console.error("Error conectando a MongoDB:", error));
 
 // Rutas
-app.use("/api/estudiantes", require("./routes/estudiantes"));
-app.use("/api/auth", require("./routes/auth")); // 👈 Nueva ruta de login/registro
+app.use("/api/auth", require("./routes/auth"));           // Ruta para login (y registro si agregas)
+app.use("/api/estudiantes", require("./routes/estudiantes")); // Rutas protegidas para estudiantes
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {

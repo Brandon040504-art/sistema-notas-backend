@@ -1,29 +1,26 @@
-import jwt from "jsonwebtoken";
+const jwt = require("jsonwebtoken");
 
-export const verificarToken = (req, res, next) => {
-  const token = req.headers["authorization"]?.split(" ")[1];
-  if (!token) return res.status(401).json({ msg: "Token requerido" });
+// Middleware para validar token y guardar usuario en req.user
+exports.protegerRuta = (req, res, next) => {
+  const token = req.header("Authorization")?.split(" ")[1]; // 'Bearer token'
 
-  jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
-    if (err) return res.status(403).json({ msg: "Token inválido" });
-    req.usuario = decoded;
+  if (!token) return res.status(401).json({ msg: "No token, acceso denegado" });
+
+  try {
+    const decodificado = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = decodificado;
     next();
-  });
+  } catch (error) {
+    return res.status(401).json({ msg: "Token no válido" });
+  }
 };
 
-export const soloAdmin = (req, res, next) => {
-  if (req.usuario.rol !== "admin") return res.status(403).json({ msg: "No autorizado" });
-  next();
+// Middleware para controlar roles
+exports.verificarRoles = (...rolesPermitidos) => {
+  return (req, res, next) => {
+    if (!rolesPermitidos.includes(req.user.rol)) {
+      return res.status(403).json({ msg: "No tienes permisos para esta acción" });
+    }
+    next();
+  };
 };
-
-export const soloProfesor = (req, res, next) => {
-  if (req.usuario.rol !== "profesor" && req.usuario.rol !== "admin")
-    return res.status(403).json({ msg: "No autorizado" });
-  next();
-};
-
-export const soloAlumno = (req, res, next) => {
-  if (req.usuario.rol !== "alumno") return res.status(403).json({ msg: "No autorizado" });
-  next();
-};
-
